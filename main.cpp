@@ -40,31 +40,54 @@ void clearCin(){
 	cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 }
 #define NUM_THREADS 4
-void *PrintHello(void *arg)
+void *attackWithBee(void *arg)
 {
    beeClass* myBee;
    myBee = (beeClass*)arg;
    usleep(rand()%1000+1);
    cout << "Hello World! Thread ID, " << myBee->id << endl;
    cout << "BEE " << myBee->id << " Start: " << myBee->start << " | Attack: " << myBee->attack << " | end: " << myBee->end << endl;
-	results[myBee->id] = "Completed by Bee " + myBee->id;
+	results[myBee->id] = "Completed by Bee " + to_string(myBee->id);
    pthread_exit(NULL);
 }
 int runAssult (beeClass* beeList){
 	pthread_t threads[NUM_THREADS];
    	int thread;
    	int i;
-   	for( i=0; i < NUM_THREADS; i++ ){
-      cout << "AssultFunction: creating thread, " << i << endl;
-      thread = pthread_create(&threads[i], NULL, 
-                          PrintHello, (void *)&beeList[i]);
-      if (thread){
-         cout << "AssultFunction Error:unable to create thread," << thread << endl;
-         exit(-1);
-      }
-   }
-   cout << "Threads are done in main" << endl;
-   pthread_exit(NULL);
+
+   	pthread_attr_t attr;
+   	void *status;
+
+   	// Initialize and set thread joinable
+   	pthread_attr_init(&attr);
+   	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+
+   	for(i = 0; i < NUM_THREADS; i++){
+      	cout << "AssultFunction: creating thread, " << i << endl;
+      	thread = pthread_create(&threads[i], NULL, 
+                          attackWithBee, (void *)&beeList[i]);
+      	if (thread){
+        	cout << "AssultFunction Error:unable to create thread," << thread << endl;
+        	exit(-1);
+      	}
+   	}
+   	// free attribute and wait for the other threads
+   	pthread_attr_destroy(&attr);
+   	for(i = 0; i < NUM_THREADS; i++){
+      	thread = pthread_join(threads[i], &status);
+      	if (thread){
+        	cout << "Error:unable to join," << thread << endl;
+        	exit(-1);
+      	}
+      	cout << "Main: completed thread id :" << i ;
+      	cout << "  exiting with status :" << status << endl;
+   	}
+
+   	for(i = 0; i < NUM_THREADS; i++){
+   		cout << "Results: " << results[i] << endl;
+   	}
+   	cout << "Main: program exiting." << endl;
+   	pthread_exit(NULL);
 }
 
 int main(){
