@@ -21,9 +21,7 @@ public:
 		attack = a;
 		id = i;
 	}
-	beeClass(){
-
-	}
+	beeClass(){}
 };
 
 
@@ -79,7 +77,7 @@ int runAssult (beeClass* beeList){
    	for(i = 0; i < NUM_THREADS; i++){
       	thread = pthread_join(threads[i], &status);
       	if (thread){
-        	cout << "Hive: We have lost contact with the swarm " << thread << "!" << endl;
+        	cout << "Hive: We have lost contact with swarm " << thread << "!" << endl;
         	cout << "Hive: They have refused to rejoin the hive!" << endl;
         	cout << "Hive: Self destruction... initiated..." << endl;
         	exit(-1);
@@ -100,13 +98,13 @@ int main(){
 	int arrayCount;
 	char response;
 
-	cout << "How many attacking bees do you want?";
+	cout << "Hive: How many attacking bees do you want?";
 	cin >> arrayCount;
 
-	cout << "Please enter your pem file: ";
+	cout << "Hive: Please enter your pem file: ";
 	cin >> pem;
 
-	cout << "Please enter the number of instances to use: ";
+	cout << "Hive: Please enter the number of instances to use: ";
 	cin >> instances;
 
 	clearCin();
@@ -123,22 +121,22 @@ int main(){
 		cout << "BEE " << i << " Start: " << beeList[i].start << " | Attack: " << beeList[i].attack << " | end: " << beeList[i].end << endl;
 	}
 	cout << "====================================" << endl;
-	cout << "Do you wish to begin the assult? (y/n)" << endl;
+	cout << "Hive: Do you wish to begin the assult? (y/n)" << endl;
 	cout << "User > ";
 	cin >> response;
 
 	if(response == 'y' || response == 'Y'){
-		cout << "Sit back, the assult will begin shortly." << endl;
+		cout << "Hive: Sit back, the assult will begin shortly." << endl;
 		 runAssult(beeList);
 	}
 	else{
-		cout << "We will dismiss the assembled swarms." << endl;
+		cout << "Hive: We will dismiss the assembled swarms." << endl;
 	}
 
 	cout << "====================================" << endl;
 	cout << "====================================" << endl;
 	cout << "====================================" << endl;
-	cout << "Terminating Execution..." << endl;
+	cout << "Hive: Shutting down..." << endl;
 
 	delete[] beeList;
 	return 0;
