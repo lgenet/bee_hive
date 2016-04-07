@@ -45,9 +45,11 @@ void *attackWithBee(void *arg)
    beeClass* myBee;
    myBee = (beeClass*)arg;
    usleep(rand()%1000+1);
-   cout << "Hello World! Thread ID, " << myBee->id << endl;
-   cout << "BEE " << myBee->id << " Start: " << myBee->start << " | Attack: " << myBee->attack << " | end: " << myBee->end << endl;
-	results[myBee->id] = "Completed by Bee " + to_string(myBee->id);
+   cout << "Bee " << myBee->id << " is spining up "<< endl;
+	// system(myBee->start.c_str());
+	cout << "Bee " << myBee->id << " is starting its asult!" << endl;
+	// system(myBee->attack.c_str());
+	results[myBee->id] = "Assulted Completed by Bee " + to_string(myBee->id);
    pthread_exit(NULL);
 }
 int runAssult (beeClass* beeList){
@@ -63,11 +65,12 @@ int runAssult (beeClass* beeList){
    	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
 
    	for(i = 0; i < NUM_THREADS; i++){
-      	cout << "AssultFunction: creating thread, " << i << endl;
+      	cout << "Hive: Bee swarm " << i <<  " is locked, loaded, and ready to go! " << endl;
       	thread = pthread_create(&threads[i], NULL, 
                           attackWithBee, (void *)&beeList[i]);
       	if (thread){
-        	cout << "AssultFunction Error:unable to create thread," << thread << endl;
+        	cout << "Hive: Massive failure!  We failed to ready Bee " << thread << "!" 
+        		 << "Hive: Self destruction... initiated..." << endl;
         	exit(-1);
       	}
    	}
@@ -76,22 +79,25 @@ int runAssult (beeClass* beeList){
    	for(i = 0; i < NUM_THREADS; i++){
       	thread = pthread_join(threads[i], &status);
       	if (thread){
-        	cout << "Error:unable to join," << thread << endl;
+        	cout << "Hive: We have lost contact with the swarm " << thread << "!" << endl;
+        	cout << "Hive: They have refused to rejoin the hive!" << endl;
+        	cout << "Hive: Self destruction... initiated..." << endl;
         	exit(-1);
       	}
-      	cout << "Main: completed thread id :" << i ;
-      	cout << "  exiting with status :" << status << endl;
+      	cout << "Hive: Bee Swarm " << i << " has returned to the hive!";
+      	cout << "  ariving with status :" << status << endl;
    	}
 
    	for(i = 0; i < NUM_THREADS; i++){
-   		cout << "Results: " << results[i] << endl;
+   		cout << "Hive: " << results[i] << endl;
+   		// system(beeList[i].end.c_str());
    	}
-   	cout << "Main: program exiting." << endl;
+   	cout << "Hive: Mission complete!  Shuting down..." << endl;
    	pthread_exit(NULL);
 }
 
 int main(){
-	int arrayCount	;
+	int arrayCount;
 	char response;
 
 	cout << "How many attacking bees do you want?";
@@ -137,4 +143,3 @@ int main(){
 	delete[] beeList;
 	return 0;
 }
-
